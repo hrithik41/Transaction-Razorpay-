@@ -73,12 +73,17 @@ export const dashboard = async () => {
     return response.data;
 };
 
-export const createOrder = async (amount: number) => {
-    const response = await axiosInstance.post('/create-order', { amount });
+export const createOrder = async (productId: string) => {
+    const response = await axiosInstance.post('/create-order', { productId });
     return response.data;
 };
 
 export const verifyPayment = async (paymentData: any) => {
     const response = await axiosInstance.post('/verify-payment', paymentData);
+    return response.data;
+};
+
+export const getProducts = async () => {
+    const response = await axiosInstance.post('/products', {});
     return response.data;
 };

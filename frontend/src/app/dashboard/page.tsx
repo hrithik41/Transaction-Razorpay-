@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { dashboard, createOrder, verifyPayment } from "@/lib/api";
+import { dashboard, createOrder, verifyPayment, getProducts } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [products, setProducts] = useState<any[]>([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -25,6 +26,8 @@ export default function Dashboard() {
             try {
                 const data = await dashboard();
                 setUser(data.user);
+                const productData = await getProducts();
+                setProducts(productData.products);
                 setLoading(false);
             } catch (error) {
                 console.error("Failed to fetch dashboard:", error);
@@ -43,11 +46,11 @@ export default function Dashboard() {
         }
     };
 
-    const handlePayment = async (amount: number) => {
+    const handlePayment = async (productId: string) => {
         setIsProcessing(true);
         try {
             // 1. Create order on backend
-            const order = await createOrder(amount);
+            const order = await createOrder(productId);
 
             // 2. Open Razorpay Checkout
             const options = {
@@ -64,7 +67,7 @@ export default function Dashboard() {
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
-                            amount: order.amount
+                            amount: order.amount,
                         });
                         alert("Payment Successful!");
                         window.location.reload();
@@ -144,6 +147,55 @@ export default function Dashboard() {
                     </div>
                 </div>
 
+                <section className="mt-12">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-bold text-zinc-900 tracking-tight">Available Products</h2>
+                        <span className="text-xs font-medium text-zinc-400 bg-zinc-100 px-2 py-1 rounded-md">
+                            {products?.length} Items
+                        </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 mb-10 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {products?.map((product: any) => (
+                            <div key={product.product_id} className="group bg-white border border-zinc-200 rounded-3xl overflow-hidden hover:border-zinc-900 transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-zinc-100">
+                                <div className="relative h-48 overflow-hidden">
+                                    <img
+                                        src={product.product_image}
+                                        alt={product.product_name}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    />
+                                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
+                                        <span className="text-xs font-bold text-zinc-900">
+                                            {Math.round(((product.display_price - product.discount_price) / product.display_price) * 100)}% OFF
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="p-6">
+                                    <h3 className="font-semibold text-zinc-900 text-lg">{product.product_name}</h3>
+                                    <p className="text-sm text-zinc-500 mt-2 line-clamp-2 h-10">{product.product_description}</p>
+
+                                    <div className="mt-6 flex items-center justify-between">
+                                        <div className="flex flex-col">
+                                            <span className="text-xs text-zinc-400 line-through">₹{product.display_price}</span>
+                                            <span className="text-xl font-bold text-zinc-900">₹{product.discount_price}</span>
+                                        </div>
+
+                                        <button
+                                            onClick={() => handlePayment(product.product_id)}
+                                            disabled={isProcessing}
+                                            className="bg-zinc-900 text-white px-5 py-2.5 rounded-2xl text-sm font-semibold hover:bg-zinc-800 active:scale-95 transition-all disabled:opacity-50"
+                                        >
+                                            Buy Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+
                 <section className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
                     <div className="p-6 border-b border-zinc-100 flex justify-between items-center">
                         <h2 className="font-semibold text-zinc-900">Recent Activity</h2>
@@ -157,14 +209,15 @@ export default function Dashboard() {
                         </div>
                         <p className="text-sm text-zinc-500">No transactions recorded yet.</p>
                         <button
-                            onClick={() => handlePayment(500)}
-                            disabled={isProcessing}
+                            onClick={() => handlePayment('testProduct1')}
+                            disabled={isProcessing} 
                             className="mt-6 inline-flex items-center gap-2 bg-zinc-900 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-zinc-800 transition-all active:scale-95 shadow-lg shadow-zinc-200 disabled:opacity-50"
                         >
                             {isProcessing ? "Processing..." : "Top-up ₹500"}
                         </button>
                     </div>
                 </section>
+
             </main>
         </div>
     );

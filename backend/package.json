@@ -4,6 +4,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
+    "seed": "ts-node prisma/seed.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "prisma:generate": "npx prisma generate",

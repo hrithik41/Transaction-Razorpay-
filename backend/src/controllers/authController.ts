@@ -24,6 +24,8 @@ const register = async (req: express.Request, res: express.Response) => {
                 name: name,
                 email: email,
                 password: hash,
+                updatedAt: new Date(),
+                createdAt: new Date(),
             }
         });
 
