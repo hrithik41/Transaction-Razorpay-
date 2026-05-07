@@ -1,4 +1,4 @@
-import { instance } from "../utils/razorpay";
+import { razorpay } from "../utils/razorpay";
 import { Request, Response } from "express";
 import prisma from "../lib/prisma";
 
@@ -18,7 +18,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
         const amount = product.discount_price;
 
-        const order = await instance.orders.create({
+        const order = await razorpay.orders.create({
             amount: amount * 100,
             currency: "INR",
             receipt: `rcpt_${productId}_${Date.now()}`,

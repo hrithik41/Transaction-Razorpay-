@@ -7,8 +7,6 @@ export const verifyPayment = async (req: express.Request, res: express.Response)
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount } = req.body;
         const userId = (req as any).userId;
 
-        // 1. Generate the expected signature
-        // The signature is HMAC-SHA256 of (order_id + "|" + payment_id) using the Key Secret
         const hmac = crypto.createHmac('sha256', process.env.SECRET!);
         hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
         const generated_signature = hmac.digest('hex');
@@ -21,9 +19,6 @@ export const verifyPayment = async (req: express.Request, res: express.Response)
             userId: userId
         };
 
-        console.log("paymentDetails=>", paymentDetails);
-
-        // 2. Compare signatures
         if (generated_signature === razorpay_signature) {
             res.json(paymentDetails);
             

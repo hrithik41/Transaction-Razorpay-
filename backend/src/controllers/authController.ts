@@ -5,11 +5,9 @@ import { verifyAccessRefreshToken, generateTokens } from '../utils/jwt';
 
 // User Created
 const register = async (req: express.Request, res: express.Response) => {
-    console.log("Registering");
     try {
 
         const { name, email, password } = req.body;
-        console.log(req.body);
         if (!name || !email || !password) {
             return res.status(400).json({ error: 'All fields are required' });
         }
@@ -29,8 +27,6 @@ const register = async (req: express.Request, res: express.Response) => {
             }
         });
 
-        console.log(newUser);
-
         const [accessToken, refreshToken] = generateTokens(newUser.id);
 
         return res.status(201).json({ message: "User Created", newUser, accessToken, refreshToken });
@@ -42,11 +38,8 @@ const register = async (req: express.Request, res: express.Response) => {
 };
 
 const login = async (req: express.Request, res: express.Response) => {
-    console.log("Login");
     try {
         const { email, password } = req.body;
-        console.log(req.body);
-
         if (!email || !password) {
             return res.status(400).json({ error: 'All fields are required' });
         }
@@ -61,8 +54,6 @@ const login = async (req: express.Request, res: express.Response) => {
             return res.status(400).json({ error: 'Invalid password' });
         }
 
-        console.log(user)
-
         const [accessToken, refreshToken] = generateTokens(user.id);
         return res.status(200).json({ message: "User Logged In", user, accessToken, refreshToken });
     }
@@ -73,7 +64,6 @@ const login = async (req: express.Request, res: express.Response) => {
 };
 
 const refreshAccessToken = (req: express.Request, res: express.Response) => {
-    console.log("Refreshing Access Token");
     try {
         const refreshtoken = req.headers.refreshtoken;
         if (!refreshtoken) {

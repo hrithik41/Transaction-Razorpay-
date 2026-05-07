@@ -87,3 +87,38 @@ export const getProducts = async () => {
     const response = await axiosInstance.post('/products', {});
     return response.data;
 };
+
+export const webhook = async (data: any) => {
+    const response = await axiosInstance.post('/webhook', data);
+    return response.data;
+};
+
+export const addToCart = async (data: any) => {
+    const response = await axiosInstance.post('/cart/add', data);
+    return response.data;
+};
+
+export const getCart = async () => {
+    const response = await axiosInstance.get('/cart/get');
+    return response.data;
+};
+
+export const removeFromCart = async (data: any) => {
+    const response = await axiosInstance.put('/cart/remove', data);
+    return response.data;
+};
+
+export const clearCart = async () => {
+    const response = await axiosInstance.delete('/cart/clear');
+    return response.data;
+};
+
+export const checkoutCart = async () => {
+    const response = await axiosInstance.post('/cart/checkout');
+    return response.data;
+};
+
+export const getOrders = async () => {
+    const response = await axiosInstance.get('/orders/history');
+    return response.data;
+};

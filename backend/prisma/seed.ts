@@ -5,7 +5,7 @@ async function main() {
 
     const products = [
         {
-            product_id: 'prod_1',
+            product_id: 1,
             product_name: 'Premium Subscription',
             product_description: 'Unlimited access to all financial tools and analytics.',
             display_price: 1200,
@@ -15,7 +15,7 @@ async function main() {
             product_image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=400',
         },
         {
-            product_id: 'prod_2',
+            product_id: 2,
             product_name: 'Pro Trader Pack',
             product_description: 'Advanced charting and real-time market data.',
             display_price: 2500,
@@ -25,7 +25,7 @@ async function main() {
             product_image: 'https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&q=80&w=400',
         },
         {
-            product_id: 'prod_3',
+            product_id: 3,
             product_name: 'Starter Wallet',
             product_description: 'Perfect for beginners starting their investment journey.',
             display_price: 500,
@@ -35,7 +35,7 @@ async function main() {
             product_image: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=400',
         },
         {
-            product_id: 'prod_4',
+            product_id: 4,
             product_name: 'Tax Planner Plus',
             product_description: 'Automated tax reports and filing assistance.',
             display_price: 1500,
@@ -45,7 +45,7 @@ async function main() {
             product_image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=400',
         },
         {
-            product_id: 'prod_5',
+            product_id: 5,
             product_name: 'Savings Maximizer',
             product_description: 'AI-driven insights to help you save more every month.',
             display_price: 800,
