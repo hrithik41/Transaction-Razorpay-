@@ -51,7 +51,7 @@ export default function Dashboard() {
         try {
             // 1. Create order on backend
             const order = await createOrder(productId);
-
+            console.log('order=>', order);
             // 2. Open Razorpay Checkout
             const options = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -63,14 +63,15 @@ export default function Dashboard() {
                 handler: async function (response: any) {
                     try {
                         // 3. Verify payment on backend
-                        await verifyPayment({
+                        const payresult = await verifyPayment({
                             razorpay_order_id: response.razorpay_order_id,
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_signature: response.razorpay_signature,
                             amount: order.amount,
                         });
+                        console.log('payresult=>', payresult);
                         alert("Payment Successful!");
-                        window.location.reload();
+                        // window.location.reload();
                     } catch (err) {
                         alert("Verification failed!");
                     }

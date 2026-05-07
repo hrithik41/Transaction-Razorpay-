@@ -13,24 +13,20 @@ export const verifyPayment = async (req: express.Request, res: express.Response)
         hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
         const generated_signature = hmac.digest('hex');
 
+        const paymentDetails = {
+            razorpay_order_id: razorpay_order_id,
+            razorpay_payment_id: razorpay_payment_id,
+            razorpay_signature: razorpay_signature,
+            amount: amount,
+            userId: userId
+        };
+
+        console.log("paymentDetails=>", paymentDetails);
+
         // 2. Compare signatures
         if (generated_signature === razorpay_signature) {
-            // Success! 
-            // Here you can update the user or create a record in your DB
+            res.json(paymentDetails);
             
-            /* Example:
-            await prisma.transaction.create({
-                data: {
-                    userId,
-                    orderId: razorpay_order_id,
-                    paymentId: razorpay_payment_id,
-                    amount: amount / 100, // Convert back from paise
-                    status: 'SUCCESS'
-                }
-            });
-            */
-
-            return res.status(200).json({ message: 'Payment verified successfully' });
         } else {
             console.error("Signature mismatch!");
             return res.status(400).json({ error: 'Payment verification failed' });
