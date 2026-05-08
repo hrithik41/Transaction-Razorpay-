@@ -43,7 +43,7 @@ export const ProductCard = ({ product, handlePayment, onCartUpdate }: ProductCar
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute top-5 right-5 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-sm border border-white/20">
-                    <span className="text-[10px] font-light font-black text-zinc-900 tracking-tighter uppercase">
+                    <span className="text-[10px] font-light text-zinc-900 tracking-tighter uppercase">
                         {discountPercentage}% Save
                     </span>
                 </div>
@@ -69,14 +69,14 @@ export const ProductCard = ({ product, handlePayment, onCartUpdate }: ProductCar
                         {/* Buy Now Button */}
                         <button
                             onClick={() => handlePayment(product.product_id)}
-                            className="w-full bg-zinc-100 text-zinc-900 py-3 rounded-2xl text-[10px] font-light font-black tracking-widest uppercase hover:bg-zinc-200 transition-all active:scale-95"
+                            className="w-full bg-zinc-100 text-zinc-900 py-3 rounded-2xl text-[10px] font-light tracking-widest uppercase hover:bg-zinc-200 transition-all active:scale-95"
                         >
                             Instant Buy
                         </button>
 
                         {/* Add to Cart Container */}
                         <div className="group/btn relative h-12">
-                            <button className={`w-full h-full flex items-center justify-center gap-2 rounded-2xl text-[10px] font-light font-black tracking-widest uppercase transition-all duration-300 ${isDone ? 'bg-emerald-500 text-white' : 'bg-zinc-900 text-white group-hover/btn:opacity-0 shadow-lg shadow-zinc-200'}`}>
+                            <button className={`w-full h-full flex items-center justify-center gap-2 rounded-2xl text-[10px] font-light tracking-widest uppercase transition-all duration-300 ${isDone ? 'bg-emerald-500 text-white' : 'bg-zinc-900 text-white group-hover/btn:opacity-0 shadow-lg shadow-zinc-200'}`}>
                                 {isDone ? <Check size={16} /> : "Add to Bag"}
                             </button>
 
