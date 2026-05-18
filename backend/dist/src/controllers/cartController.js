@@ -23,9 +23,16 @@ const addToCart = async (req, res) => {
             }
         });
         if (existingItem) {
+            const newQuantity = existingItem.cart_quantity + quantity;
+            if (newQuantity <= 0) {
+                await prisma_1.default.cart.delete({
+                    where: { cart_id: existingItem.cart_id }
+                });
+                return res.status(200).json({ message: "Item removed from cart" });
+            }
             const updatedItem = await prisma_1.default.cart.update({
                 where: { cart_id: existingItem.cart_id },
-                data: { cart_quantity: existingItem.cart_quantity + quantity, cart_amount: (existingItem.cart_quantity + quantity) * product.discount_price }
+                data: { cart_quantity: newQuantity, cart_amount: newQuantity * product.discount_price }
             });
             return res.status(200).json({ message: "Quantity updated", cart: updatedItem });
         }

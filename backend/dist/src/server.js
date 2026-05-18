@@ -44,7 +44,6 @@ const PORT = process.env.PORT || 8009;
 const server = app_1.app.listen(PORT, () => {
     logger_1.default.info(`🚀 Server is running on http://localhost:${PORT}`);
 });
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
     logger_1.default.error('UNHANDLED REJECTION! 💥 Shutting down...');
     logger_1.default.error(err.name, err.message);
@@ -52,7 +51,6 @@ process.on('unhandledRejection', (err) => {
         process.exit(1);
     });
 });
-// Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
     logger_1.default.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
     logger_1.default.error(err.name, err.message);

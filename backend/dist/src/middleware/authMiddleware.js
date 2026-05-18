@@ -7,7 +7,6 @@ exports.authMiddleware = void 0;
 const prisma_1 = __importDefault(require("../lib/prisma"));
 const jwt_1 = require("../utils/jwt");
 const authMiddleware = async (req, res, next) => {
-    // const refreshToken = req.headers.refreshtoken;
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {

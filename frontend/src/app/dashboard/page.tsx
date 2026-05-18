@@ -27,11 +27,14 @@ export default function Dashboard() {
             }
 
             try {
-                const data = await dashboard();
+                const [data, productData, cartData] = await Promise.all([
+                    dashboard(),
+                    getProducts(),
+                    getCart()
+                ]);
+                
                 setUser(data.user);
-                const productData = await getProducts();
                 setProducts(productData.products);
-                const cartData = await getCart();
                 setCart(cartData.cart || []);
                 setLoading(false);
             } catch (error) {
