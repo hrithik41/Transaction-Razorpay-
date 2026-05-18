@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const prisma_1 = __importDefault(require("../lib/prisma"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jwt_1 = require("../utils/jwt");
-// User Created
 const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;

@@ -15,7 +15,6 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use((0, morgan_1.default)('dev'));
 app.use('/api', router_1.default);
-// Health check endpoint
 app.get('/health', async (req, res) => {
     try {
         await prisma_1.default.$queryRaw `SELECT 1`;

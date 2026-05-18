@@ -7,7 +7,6 @@ exports.getProducts = void 0;
 const prisma_1 = __importDefault(require("../lib/prisma"));
 const getProducts = async (req, res) => {
     try {
-        // Fetch all products that are marked as AVAILABLE
         const products = await prisma_1.default.product.findMany({
             where: {
                 product_status: 'AVAILABLE'

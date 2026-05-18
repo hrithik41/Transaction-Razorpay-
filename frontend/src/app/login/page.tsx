@@ -29,7 +29,7 @@ export default function Login() {
 
             router.push('/dashboard');
         } catch (err: any) {
-            setError(err.response?.data?.error || "Invalid email or password.");
+            setError(err.response?.data?.error || "Invalid email or password");
         } finally {
             setLoading(false);
         }

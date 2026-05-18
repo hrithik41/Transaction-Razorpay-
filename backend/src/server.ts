@@ -10,7 +10,6 @@ const server = app.listen(PORT, () => {
   logger.info(`🚀 Server is running on http://localhost:${PORT}`);
 });
 
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (err: any) => {
   logger.error('UNHANDLED REJECTION! 💥 Shutting down...');
   logger.error(err.name, err.message);
@@ -19,7 +18,6 @@ process.on('unhandledRejection', (err: any) => {
   });
 });
 
-// Handle uncaught exceptions
 process.on('uncaughtException', (err: any) => {
   logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
   logger.error(err.name, err.message);

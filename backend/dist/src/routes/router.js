@@ -57,6 +57,7 @@ router.post('/products', authMiddleware_1.authMiddleware, productController.getP
 router.post('/webhook', webhookController_1.webhook);
 router.get('/orders/history', authMiddleware_1.authMiddleware, transactionController_1.getOrderHistory);
 router.post('/payment-failed', authMiddleware_1.authMiddleware, transactionController_1.markPaymentFailed);
+router.post('/refund-payment', authMiddleware_1.authMiddleware, transactionController_1.refundPayment);
 router.post('/cart/add', authMiddleware_1.authMiddleware, cartController.addToCart);
 router.get('/cart/get', authMiddleware_1.authMiddleware, cartController.getCart);
 router.put('/cart/remove', authMiddleware_1.authMiddleware, cartController.removeFromCart);

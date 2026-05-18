@@ -12,7 +12,6 @@ app.use(morgan('dev'));
 
 app.use('/api', router);
 
-// Health check endpoint
 app.get('/health', async (req: Request, res: Response) => {
   try {
     await prisma.$queryRaw`SELECT 1`;

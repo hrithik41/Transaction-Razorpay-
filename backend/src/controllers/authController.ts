@@ -3,7 +3,6 @@ import prisma from '../lib/prisma';
 import bcrypt from 'bcrypt';
 import { verifyAccessRefreshToken, generateTokens } from '../utils/jwt';
 
-// User Created
 const register = async (req: express.Request, res: express.Response) => {
     try {
 

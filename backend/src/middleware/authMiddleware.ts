@@ -4,7 +4,6 @@ import { verifyAccessRefreshToken, generateTokens } from '../utils/jwt';
 
 export const authMiddleware = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
-    // const refreshToken = req.headers.refreshtoken;
     try {
         const authHeader = req.headers.authorization;
 

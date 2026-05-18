@@ -6,7 +6,7 @@
     "dev": "nodemon src/server.ts",
     "seed": "ts-node prisma/seed.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "prisma:generate": "npx prisma generate",
     "prisma:push": "npx prisma db push"
   },

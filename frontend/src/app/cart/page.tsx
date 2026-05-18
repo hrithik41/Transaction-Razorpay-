@@ -178,7 +178,6 @@ export default function CartPage() {
                                         <div className="flex justify-between items-end mt-4">
                                             <div className="flex items-center bg-zinc-50 rounded-xl p-1 border border-zinc-100">
                                                 <button 
-                                                    disabled={item.cart_quantity === 1} 
                                                     onClick={() => handleUpdateQuantity(item.product.product_id, -1)}
                                                     className="p-2 hover:bg-white rounded-lg transition-colors text-zinc-500 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent"
                                                 >

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { getOrders } from "@/lib/api";
+import { getOrders, refundPayment } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Clock, CheckCircle2, CreditCard, Calendar, Hash, ArrowUpRight, Loader2, XCircle } from "lucide-react";
 
@@ -24,6 +24,18 @@ export default function OrdersPage() {
         };
         fetchOrders();
     }, []);
+
+    const handleRefundPayment = async (orderId: string) => {
+        try {
+            alert("Refund initiated for order " + orderId);
+            const response = await refundPayment({ orderId });
+            console.log("Backend Response:", response);
+            alert("Refund response: " + response);
+            setOrders(orders.filter((order) => order.id !== orderId));
+        } catch (err) {
+            setError("Failed to refund payment");
+        }
+    };
 
     if (loading) {
         return (
@@ -118,12 +130,11 @@ export default function OrdersPage() {
                                     </div>
 
                                     <div className="flex flex-col items-end gap-3 shrink-0">
-                                        <div className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[10px] font-light uppercase tracking-widest border transition-all duration-500 ${
-                                            order.status === 'SUCCESS'
-                                                ? 'bg-emerald-50 text-emerald-600 border-emerald-100 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500'
-                                                : order.status === 'FAILED'
-                                                    ? 'bg-red-50 text-red-600 border-red-100 group-hover:bg-red-500 group-hover:text-white group-hover:border-red-500'
-                                                    : 'bg-amber-50 text-amber-600 border-amber-100 animate-pulse'
+                                        <div className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[10px] font-light uppercase tracking-widest border transition-all duration-500 ${order.status === 'SUCCESS'
+                                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500'
+                                            : order.status === 'FAILED'
+                                                ? 'bg-red-50 text-red-600 border-red-100 group-hover:bg-red-500 group-hover:text-white group-hover:border-red-500'
+                                                : 'bg-amber-50 text-amber-600 border-amber-100 animate-pulse'
                                             }`}>
                                             {order.status === 'SUCCESS' ? (
                                                 <>
@@ -142,6 +153,16 @@ export default function OrdersPage() {
                                                 </>
                                             )}
                                         </div>
+
+                                        {order.status === 'SUCCESS' && (
+                                            <button
+                                                onClick={() => handleRefundPayment(order.razorpayOrderId)}
+                                                className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-xs tracking-widest uppercase hover:bg-red-600 transition-colors"
+                                            >
+                                                Refund
+                                            </button>
+                                        )}
+
                                         <span className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.2em]">
                                             Secured Transaction
                                         </span>

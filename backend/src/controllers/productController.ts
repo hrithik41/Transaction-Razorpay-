@@ -3,7 +3,6 @@ import prisma from '../lib/prisma';
 
 export const getProducts = async (req: Request, res: Response) => {
     try {
-        // Fetch all products that are marked as AVAILABLE
         const products = await prisma.product.findMany({
             where: {
                 product_status: 'AVAILABLE'

@@ -127,3 +127,8 @@ export const markPaymentFailed = async (data: { orderId: string }) => {
     const response = await axiosInstance.post('/payment-failed', data);
     return response.data;
 };
+
+export const refundPayment = async (data: { orderId: string }) => {
+    const response = await axiosInstance.post('/refund-payment', data);
+    return response.data;
+};
