@@ -1,6 +1,15 @@
-import { redirect } from "next/navigation";
+import Hero from "@/components/Hero";
+import HorizontalScroll from "@/components/HorizontalScroll";
+import FeatureProducts from "@/components/FeatureProducts";
+import Footer from "@/components/Footer";
 
 export default function Home() {
-  redirect("/dashboard");
+  return (
+    <main className="min-h-screen bg-black">
+      <Hero />
+      <HorizontalScroll />
+      <FeatureProducts />
+      <Footer />
+    </main>
+  );
 }
-

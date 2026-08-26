@@ -1,188 +1,125 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { getOrders, refundPayment } from "@/lib/api";
+import { getOrders } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Clock, CheckCircle2, CreditCard, Calendar, Hash, ArrowUpRight, Loader2, XCircle } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, Clock, CheckCircle2, XCircle, Package } from "lucide-react";
+import { motion } from "framer-motion";
 
-export default function OrdersPage() {
+export default function Orders() {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
         const fetchOrders = async () => {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                router.push('/login');
+                return;
+            }
+
             try {
                 const data = await getOrders();
                 setOrders(data.transactions || []);
-            } catch (err) {
-                setError("Failed to load your financial history");
+            } catch (error) {
+                console.error("Failed to fetch orders:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchOrders();
-    }, []);
 
-    const handleRefundPayment = async (orderId: string) => {
-        try {
-            alert("Refund initiated for order " + orderId);
-            const response = await refundPayment({ orderId });
-            console.log("Backend Response:", response);
-            alert("Refund response: " + response);
-            setOrders(orders.filter((order) => order.id !== orderId));
-        } catch (err) {
-            setError("Failed to refund payment");
+        fetchOrders();
+    }, [router]);
+
+    const getStatusIcon = (status: string) => {
+        switch (status) {
+            case 'SUCCESS':
+                return <CheckCircle2 size={16} className="text-emerald-500" />;
+            case 'FAILED':
+                return <XCircle size={16} className="text-red-500" />;
+            case 'REFUNDED':
+                return <Clock size={16} className="text-amber-500" />;
+            default:
+                return <Clock size={16} className="text-gray-500" />;
         }
     };
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-zinc-50">
-                <Loader2 className="w-8 h-8 text-zinc-900 animate-spin" />
+            <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+                <div className="w-8 h-8 border border-white/20 border-t-white rounded-full animate-spin"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-zinc-50 font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
-            {/* Header */}
-            <nav className="bg-white/80 backdrop-blur-xl border-b border-zinc-200 sticky top-0 z-50">
-                <div className="max-w-5xl mx-auto px-6 h-20 flex justify-between items-center">
-                    <button
-                        onClick={() => router.push('/dashboard')}
-                        className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 font-light text-sm transition-all group"
-                    >
-                        <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-                        Dashboard
-                    </button>
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-zinc-900 rounded-xl flex items-center justify-center">
-                            <div className="w-3 h-3 bg-white rounded-sm rotate-45"></div>
-                        </div>
-                        <span className="font-black text-lg tracking-tighter uppercase">Activity</span>
-                    </div>
-                    <div className="w-20"></div> {/* Spacer */}
-                </div>
-            </nav>
-
-            <main className="max-w-3xl mx-auto px-6 py-16">
-                <header className="mb-16">
-                    <h1 className="text-5xl font-black tracking-tighter mb-4 uppercase">Order History</h1>
-                    <p className="text-zinc-500 font-medium text-lg">A detailed log of your premium transactions.</p>
+        <div className="min-h-screen bg-[#0a0a0a] text-white font-sans">
+            <main className="max-w-[1200px] mx-auto px-6 md:px-12 py-24">
+                
+                {/* Header */}
+                <header className="mb-20">
+                    <Link href="/" className="inline-flex items-center gap-3 text-gray-500 hover:text-white transition-colors mb-12 text-[10px] uppercase tracking-[0.2em] font-light">
+                        <ArrowLeft size={14} />
+                        Back to Home
+                    </Link>
+                    <h1 className="text-4xl md:text-6xl font-extralight tracking-tight mb-6" style={{ fontFamily: 'var(--font-playfair)' }}>
+                        Order History
+                    </h1>
+                    <p className="text-gray-400 font-light max-w-lg leading-relaxed">
+                        Track your recent acquisitions and view the status of your premium transactions.
+                    </p>
                 </header>
 
-                {error ? (
-                    <div className="bg-red-50 border border-red-100 p-6 rounded-3xl text-red-600 text-sm font-light uppercase tracking-widest text-center">
-                        {error}
-                    </div>
-                ) : orders.length === 0 ? (
-                    <div className="bg-white rounded-[3rem] p-20 border border-zinc-200 text-center shadow-sm">
-                        <div className="w-20 h-20 bg-zinc-50 rounded-3xl flex items-center justify-center mx-auto mb-8">
-                            <CreditCard size={40} className="text-zinc-300" />
-                        </div>
-                        <h2 className="text-4xl font-light mb-4 uppercase tracking-tight text-zinc-900">No Records</h2>
-                        <p className="text-zinc-500 font-medium mb-10 max-w-xs mx-auto">You haven't made any transactions yet.</p>
-                        <button
-                            onClick={() => router.push('/dashboard')}
-                            className="bg-zinc-900 text-white px-10 py-4 rounded-2xl font-black text-xs tracking-widest uppercase hover:scale-105 transition-transform"
-                        >
-                            Explore Marketplace
-                        </button>
+                {/* Orders List */}
+                {orders.length === 0 ? (
+                    <div className="border border-white/10 bg-[#0f0f0f] p-16 text-center flex flex-col items-center">
+                        <Package size={48} strokeWidth={1} className="text-gray-600 mb-6" />
+                        <h2 className="text-xl font-extralight mb-2" style={{ fontFamily: 'var(--font-playfair)' }}>No Orders Yet</h2>
+                        <p className="text-gray-500 font-light text-sm mb-8">You have not made any purchases.</p>
+                        <Link href="/" className="bg-white text-black px-8 py-3 text-[10px] font-medium uppercase tracking-[0.2em] hover:bg-gray-200 transition-colors">
+                            Explore Collection
+                        </Link>
                     </div>
                 ) : (
-                    <div className="space-y-8">
-                        {orders.map((order) => (
-                            <div
+                    <div className="space-y-6">
+                        {orders.map((order, i) => (
+                            <motion.div 
                                 key={order.id}
-                                className="group bg-white p-8 rounded-4xl border border-zinc-200 shadow-sm hover:shadow-2xl hover:shadow-zinc-200/50 transition-all duration-500 relative overflow-hidden"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: i * 0.1, duration: 0.5 }}
+                                className="bg-[#0f0f0f] border border-white/5 hover:border-white/20 transition-all p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6"
                             >
-                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
-                                    <div className="space-y-4 flex-1">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 bg-zinc-50 rounded-lg text-zinc-400 group-hover:bg-zinc-900 group-hover:text-white transition-colors">
-                                                <Hash size={14} />
-                                            </div>
-                                            <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest truncate max-w-[200px]">
-                                                {order.razorpayOrderId}
-                                            </span>
-                                        </div>
-
-                                        <div>
-                                            <div className="flex items-baseline gap-1 mb-1">
-                                                <span className="text-sm font-light text-zinc-900">₹</span>
-                                                <span className="text-3xl font-black tracking-tighter text-zinc-900">
-                                                    {order.amount}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-zinc-400 text-[10px] font-light uppercase tracking-widest">
-                                                <Calendar size={12} />
-                                                {new Date(order.createdAt).toLocaleDateString('en-US', {
-                                                    month: 'long',
-                                                    day: 'numeric',
-                                                    year: 'numeric',
-                                                    hour: '2-digit',
-                                                    minute: '2-digit'
-                                                })}
-                                            </div>
-                                        </div>
+                                <div>
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <span className="text-[10px] font-light text-gray-500 uppercase tracking-widest">
+                                            Order ID: {order.razorpayOrderId}
+                                        </span>
                                     </div>
+                                    <div className="text-xl font-light mb-1" style={{ fontFamily: 'var(--font-playfair)' }}>
+                                        ₹{order.amount?.toLocaleString('en-IN') || '0'}
+                                    </div>
+                                    <div className="text-xs text-gray-500 font-light">
+                                        Placed on {new Date(order.createdAt).toLocaleDateString('en-US', {
+                                            year: 'numeric', month: 'long', day: 'numeric'
+                                        })}
+                                    </div>
+                                </div>
 
-                                    <div className="flex flex-col items-end gap-3 shrink-0">
-                                        <div className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[10px] font-light uppercase tracking-widest border transition-all duration-500 ${order.status === 'SUCCESS'
-                                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500'
-                                            : order.status === 'FAILED'
-                                                ? 'bg-red-50 text-red-600 border-red-100 group-hover:bg-red-500 group-hover:text-white group-hover:border-red-500'
-                                                : 'bg-amber-50 text-amber-600 border-amber-100 animate-pulse'
-                                            }`}>
-                                            {order.status === 'SUCCESS' ? (
-                                                <>
-                                                    <CheckCircle2 size={14} />
-                                                    Success
-                                                </>
-                                            ) : order.status === 'FAILED' ? (
-                                                <>
-                                                    <XCircle size={14} />
-                                                    Failed
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Clock size={14} />
-                                                    Processing
-                                                </>
-                                            )}
-                                        </div>
-
-                                        {order.status === 'SUCCESS' && (
-                                            <button
-                                                onClick={() => handleRefundPayment(order.razorpayOrderId)}
-                                                className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-xs tracking-widest uppercase hover:bg-red-600 transition-colors"
-                                            >
-                                                Refund
-                                            </button>
-                                        )}
-
-                                        <span className="text-[9px] font-black text-zinc-300 uppercase tracking-[0.2em]">
-                                            Secured Transaction
+                                <div className="flex items-center gap-6">
+                                    <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
+                                        {getStatusIcon(order.status)}
+                                        <span className="text-[9px] uppercase tracking-[0.2em] font-medium text-gray-300">
+                                            {order.status || 'PENDING'}
                                         </span>
                                     </div>
                                 </div>
-
-                                {/* Hover Decorative Arrow */}
-                                <div className="absolute -bottom-6 -right-6 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-700 pointer-events-none">
-                                    <ArrowUpRight size={180} strokeWidth={2} />
-                                </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
                 )}
-
-                <footer className="mt-20 text-center py-10 border-t border-zinc-100">
-                    <p className="text-[10px] font-light text-zinc-300 uppercase tracking-[0.3em]">
-                        HCart &copy; 2026. Precision Shopping.
-                    </p>
-                </footer>
             </main>
         </div>
     );

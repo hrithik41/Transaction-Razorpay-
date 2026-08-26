@@ -4,7 +4,8 @@ import { useState } from "react";
 import { register } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { User, Mail, Lock, ArrowRight, Loader2, Sparkles, Shield } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Register() {
     const [name, setName] = useState('');
@@ -30,119 +31,103 @@ export default function Register() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-50 selection:bg-zinc-900 selection:text-white font-sans p-6">
-            {/* Background Decorative Elements */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[10%] right-[10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-3xl opacity-50 animate-pulse"></div>
-                <div className="absolute bottom-[10%] left-[10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-3xl opacity-50"></div>
-            </div>
+        <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white selection:bg-white selection:text-black font-sans p-6 relative overflow-hidden">
+            
+            {/* Subtle background glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.02] rounded-full blur-3xl pointer-events-none" />
 
-            <div className="w-full max-w-md relative z-10">
-                {/* Logo Section */}
-                <div className="mb-12 flex flex-col items-center text-center">
-                    <div className="w-14 h-14 bg-zinc-900 rounded-3xl flex items-center justify-center shadow-2xl shadow-zinc-200 mb-6 -rotate-3">
-                        <div className="w-5 h-5 bg-white rounded-sm rotate-45"></div>
-                    </div>
-                    <h1 className="text-4xl font-black text-zinc-900 tracking-tighter uppercase mb-2">Request Access</h1>
-                    <p className="text-zinc-400 font-light text-xs uppercase tracking-widest">Join the Elite Network</p>
+            <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="w-full max-w-md relative z-10"
+            >
+                {/* Header */}
+                <div className="mb-12 text-center flex flex-col items-center">
+                    <Link href="/" className="mb-6 group">
+                        <h1 className="text-4xl font-extralight tracking-[0.25em] uppercase text-white transition-opacity group-hover:opacity-70" style={{ fontFamily: 'var(--font-playfair)' }}>
+                            Register
+                        </h1>
+                    </Link>
+                    <h2 className="text-[10px] tracking-[0.4em] uppercase font-light text-gray-500">
+                        Client Registration
+                    </h2>
                 </div>
 
-                <div className="bg-white p-10 rounded-4xl border border-zinc-200 shadow-2xl shadow-zinc-200/50 backdrop-blur-sm">
+                <div className="bg-[#0f0f0f] p-10 md:p-14 border border-white/5">
                     {error && (
-                        <div className="mb-8 p-4 bg-red-50 border border-red-100 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-2xl text-center">
+                        <div className="mb-8 p-4 bg-red-950/20 border border-red-500/20 text-red-400 text-[10px] font-light uppercase tracking-[0.2em] text-center">
                             {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-1">Full Legal Name</label>
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-300 group-focus-within:text-zinc-900 transition-colors">
-                                    <User size={18} strokeWidth={2.5} />
-                                </div>
-                                <input
-                                    type="text"
-                                    required
-                                    className="w-full pl-12 pr-4 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-light text-zinc-900 focus:ring-4 focus:ring-zinc-900/5 focus:border-zinc-900 focus:bg-white outline-none transition-all placeholder:text-zinc-300"
-                                    placeholder="Johnathan Doe"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                />
-                            </div>
+                    <form onSubmit={handleSubmit} className="space-y-10">
+                        <div className="space-y-4">
+                            <label className="text-[9px] font-light text-gray-500 uppercase tracking-[0.3em]">Full Legal Name</label>
+                            <input
+                                type="text"
+                                required
+                                className="w-full pb-3 bg-transparent border-b border-white/10 text-sm font-light text-white focus:border-white outline-none transition-colors placeholder:text-gray-800"
+                                placeholder="Johnathan Doe"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-300 group-focus-within:text-zinc-900 transition-colors">
-                                    <Mail size={18} strokeWidth={2.5} />
-                                </div>
-                                <input
-                                    type="email"
-                                    required
-                                    className="w-full pl-12 pr-4 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-light text-zinc-900 focus:ring-4 focus:ring-zinc-900/5 focus:border-zinc-900 focus:bg-white outline-none transition-all placeholder:text-zinc-300"
-                                    placeholder="your@email.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
+                        <div className="space-y-4">
+                            <label className="text-[9px] font-light text-gray-500 uppercase tracking-[0.3em]">Email Address</label>
+                            <input
+                                type="email"
+                                required
+                                className="w-full pb-3 bg-transparent border-b border-white/10 text-sm font-light text-white focus:border-white outline-none transition-colors placeholder:text-gray-800"
+                                placeholder="your@email.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-1">Secure Password</label>
-                            <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-zinc-300 group-focus-within:text-zinc-900 transition-colors">
-                                    <Lock size={18} strokeWidth={2.5} />
-                                </div>
-                                <input
-                                    type="password"
-                                    required
-                                    className="w-full pl-12 pr-4 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl text-sm font-light text-zinc-900 focus:ring-4 focus:ring-zinc-900/5 focus:border-zinc-900 focus:bg-white outline-none transition-all placeholder:text-zinc-300"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                            </div>
+                        <div className="space-y-4">
+                            <label className="text-[9px] font-light text-gray-500 uppercase tracking-[0.3em]">Secure Password</label>
+                            <input
+                                type="password"
+                                required
+                                className="w-full pb-3 bg-transparent border-b border-white/10 text-sm font-light text-white focus:border-white outline-none transition-colors placeholder:text-gray-800"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
                         </div>
 
-                        <div className="flex items-center gap-3 p-4 bg-zinc-50 rounded-2xl border border-zinc-100">
-                            <Shield size={20} className="text-zinc-900" strokeWidth={2.5} />
-                            <p className="text-[9px] font-light text-zinc-500 leading-relaxed uppercase tracking-tighter">
-                                By joining, you agree to our <span className="text-zinc-900">Terms of Service</span> and <span className="text-zinc-900">Privacy Protocols</span>.
-                            </p>
-                        </div>
+                        <p className="text-[9px] font-light text-gray-500 leading-relaxed uppercase tracking-tighter">
+                            By joining, you agree to our <span className="text-white">Terms of Service</span> and <span className="text-white">Privacy Protocols</span>.
+                        </p>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-zinc-900 hover:bg-zinc-800 text-white text-[11px] font-black uppercase tracking-[0.3em] py-5 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 mt-2 shadow-xl shadow-zinc-200 flex items-center justify-center gap-3"
+                            className="w-full bg-white text-black text-[10px] font-medium uppercase tracking-[0.3em] py-5 transition-all hover:bg-gray-200 disabled:opacity-50 mt-12 flex items-center justify-center gap-3"
                         >
                             {loading ? (
-                                <Loader2 className="animate-spin" size={18} />
+                                <Loader2 className="animate-spin" size={16} strokeWidth={1.5} />
                             ) : (
                                 <>
-                                    Create Profile
-                                    <ArrowRight size={16} strokeWidth={3} />
+                                    Request Access
+                                    <ArrowRight size={14} strokeWidth={1.5} />
                                 </>
                             )}
                         </button>
                     </form>
                 </div>
 
-                <div className="mt-12 text-center space-y-4">
-                    <p className="text-zinc-400 font-light text-[10px] uppercase tracking-widest">
+                <div className="mt-12 text-center">
+                    <p className="text-gray-500 font-light text-[10px] uppercase tracking-widest">
                         Already authenticated?{" "}
-                        <Link href="/login" className="text-zinc-900 hover:underline underline-offset-4 decoration-2">
+                        <Link href="/login" className="text-white hover:text-gray-300 transition-colors underline underline-offset-4 decoration-white/20">
                             Secure Login
                         </Link>
                     </p>
-                    <div className="flex items-center justify-center gap-2 text-zinc-300">
-                        <Sparkles size={12} />
-                        <span className="text-[9px] font-black uppercase tracking-[0.3em]">Encryption Grade Security</span>
-                    </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }
