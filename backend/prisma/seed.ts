@@ -1,58 +1,49 @@
+// backend/prisma/seed.ts
 import prisma from "../src/lib/prisma";
 
 async function main() {
-    console.log('Seeding products...');
+    console.log('Seeding luxury watch products...');
 
     const products = [
         {
             product_id: 1,
-            product_name: 'Premium Subscription',
-            product_description: 'Unlimited access to all financial tools and analytics.',
-            display_price: 1200,
-            discount_price: 999,
+            product_name: 'Vilix Casino Rose Gold',
+            product_description: 'Forged in 18k Rose Gold with an authentic, fully functional miniature roulette complication.',
+            display_price: 125000,
+            discount_price: 110000,
             product_quantity: 1,
-            product_stock: 500,
-            product_image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=400',
+            product_stock: 50,
+            product_image: '/products/product_2.png',
         },
         {
             product_id: 2,
-            product_name: 'Pro Trader Pack',
-            product_description: 'Advanced charting and real-time market data.',
-            display_price: 2500,
-            discount_price: 1999,
+            product_name: 'Vilix Obsidian Black',
+            product_description: 'A masterpiece of Grade 5 Titanium with a matte black DLC coating and skeletonized dial.',
+            display_price: 85000,
+            discount_price: 79999,
             product_quantity: 1,
-            product_stock: 200,
-            product_image: 'https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&q=80&w=400',
+            product_stock: 120,
+            product_image: '/products/product_3.png',
         },
         {
             product_id: 3,
-            product_name: 'Starter Wallet',
-            product_description: 'Perfect for beginners starting their investment journey.',
-            display_price: 500,
-            discount_price: 450,
+            product_name: 'Vilix Sapphire Chrono',
+            product_description: 'Featuring a transparent sapphire crystal case that reveals the intricate chronometric movement.',
+            display_price: 150000,
+            discount_price: 145000,
             product_quantity: 1,
-            product_stock: 1000,
-            product_image: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=400',
+            product_stock: 25,
+            product_image: '/products/product_4.png',
         },
         {
             product_id: 4,
-            product_name: 'Tax Planner Plus',
-            product_description: 'Automated tax reports and filing assistance.',
-            display_price: 1500,
-            discount_price: 1299,
+            product_name: 'Vilix Deep Diver',
+            product_description: 'Water-resistant to 3000m. Equipped with extreme Super-LumiNova for absolute clarity in the abyss.',
+            display_price: 45000,
+            discount_price: 42000,
             product_quantity: 1,
-            product_stock: 300,
-            product_image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=400',
-        },
-        {
-            product_id: 5,
-            product_name: 'Savings Maximizer',
-            product_description: 'AI-driven insights to help you save more every month.',
-            display_price: 800,
-            discount_price: 699,
-            product_quantity: 1,
-            product_stock: 450,
-            product_image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=400',
+            product_stock: 200,
+            product_image: '/products/product_6.png',
         }
     ];
 
@@ -71,13 +62,13 @@ async function main() {
         create: {
             email: 'test@gmail.com',
             name: 'Test User',
-            password: '0000', // We bypass password check anyway
+            password: '0000', 
             isVerified: true,
             updatedAt: new Date(),
         }
     });
 
-    console.log('Seeding completed successfully!');
+    console.log('Database Seeding completed successfully!');
 }
 
 main()

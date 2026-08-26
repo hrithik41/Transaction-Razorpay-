@@ -19,7 +19,7 @@ router.post('/refresh-token', authController.refreshAccessToken);
 router.post('/dashboard', authMiddleware, dashboard);
 router.post('/create-order', authMiddleware, createOrder);
 router.post('/verify-payment', authMiddleware, verifyPayment);
-router.post('/products', authMiddleware, productController.getProducts);
+router.post('/products', productController.getProducts);
 router.post('/webhook', webhook);
 router.get('/orders/history', authMiddleware, getOrderHistory);
 router.post('/payment-failed', authMiddleware, markPaymentFailed);

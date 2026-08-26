@@ -1,8 +1,12 @@
+// frontend/src/components/ProductCard.tsx
 'use client';
 
 import { useState } from "react";
 import { Plus, Minus, Check, ArrowRight } from "lucide-react";
-import { addToCart } from "@/lib/api";
+import { addToCart as apiAddToCart } from "@/lib/api";
+import { useCartStore } from "@/store/useCartStore";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
     product: any;
@@ -14,11 +18,32 @@ export const ProductCard = ({ product, handlePayment, onCartUpdate }: ProductCar
     const [quantity, setQuantity] = useState(1);
     const [isAdding, setIsAdding] = useState(false);
     const [isDone, setIsDone] = useState(false);
+    const router = useRouter();
+    const { isAuthenticated } = useAuthStore();
+    
+    // Hook into our new global Zustand store
+    const storeAddToCart = useCartStore((state) => state.addToCart);
 
     const onAddToCart = async () => {
+        if (!isAuthenticated) {
+            router.push("/login");
+            return;
+        }
+
         setIsAdding(true);
         try {
-            const res = await addToCart({ productId: product.product_id, quantity });
+            // Keep your existing backend API call
+            await apiAddToCart({ productId: product.product_id, quantity });
+            
+            // Instantly update our global frontend store!
+            storeAddToCart({
+                product_id: product.product_id,
+                product_name: product.product_name,
+                display_price: product.display_price,
+                discount_price: product.discount_price,
+                product_image: product.product_image,
+                quantity: quantity
+            });
 
             setIsDone(true);
             if (onCartUpdate) onCartUpdate();
@@ -34,78 +59,88 @@ export const ProductCard = ({ product, handlePayment, onCartUpdate }: ProductCar
     const discountPercentage = Math.round(((product.display_price - product.discount_price) / product.display_price) * 100);
 
     return (
-        <div className="group bg-white border border-zinc-200 rounded-[2.5rem] overflow-hidden hover:border-zinc-900 transition-all duration-500 shadow-sm hover:shadow-2xl hover:shadow-zinc-200/50">
-            {/* Image Section */}
-            <div className="relative h-64 overflow-hidden bg-zinc-100">
+        <div className="group relative flex flex-col transition-all duration-700 hover:-translate-y-2">
+            
+            {/* Image Section - No Box, Floating */}
+            <div className="relative h-80 w-full overflow-hidden flex items-center justify-center mb-6">
                 <img
                     src={product.product_image}
                     alt={product.product_name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-[1.5s] ease-out drop-shadow-2xl"
                 />
-                <div className="absolute top-5 right-5 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-2xl shadow-sm border border-white/20">
-                    <span className="text-[10px] font-light text-zinc-900 tracking-tighter uppercase">
+                
+                {/* Subtle Discount Tag */}
+                <div className="absolute top-0 right-0">
+                    <span className="text-[10px] font-medium text-gray-500 tracking-widest uppercase">
                         {discountPercentage}% Save
                     </span>
                 </div>
             </div>
 
-            {/* Content Section */}
-            <div className="p-8">
-                <div className="mb-4">
-                    <h3 className="font-light text-zinc-900 text-xl tracking-tight leading-tight mb-2">{product.product_name}</h3>
-                    <p className="text-sm text-zinc-500 line-clamp-2 h-10 leading-relaxed font-medium">{product.product_description}</p>
+            {/* Content Section - No Box, Clean Typography */}
+            <div className="flex flex-col flex-1">
+                <div className="mb-6">
+                    <h3 className="font-light text-white text-2xl tracking-wide mb-2" style={{ fontFamily: 'var(--font-playfair)' }}>
+                        {product.product_name}
+                    </h3>
+                    <p className="text-sm text-gray-500 line-clamp-2 h-10 leading-relaxed font-light">
+                        {product.product_description}
+                    </p>
                 </div>
 
-                <div className="mt-8 flex items-end justify-between gap-4">
+                <div className="flex items-end justify-between gap-4 mt-auto">
+                    
+                    {/* Price Section */}
                     <div className="flex flex-col">
-                        <span className="text-xs text-zinc-400 line-through mb-1 font-medium">₹{product.display_price}</span>
+                        <span className="text-xs text-gray-600 line-through mb-1 tracking-wider">₹{product.display_price}</span>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-sm font-light text-zinc-900">₹</span>
-                            <span className="text-3xl font-black text-zinc-900 tracking-tighter">{product.discount_price}</span>
+                            <span className="text-sm font-light text-white">₹</span>
+                            <span className="text-2xl font-light text-white tracking-widest">{product.discount_price}</span>
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 w-36">
-                        {/* Buy Now Button */}
+                    {/* Action Buttons - Redesigned to be sleek lines instead of boxes */}
+                    <div className="flex flex-col gap-3 w-32">
+                        
                         <button
-                            onClick={() => handlePayment(product.product_id)}
-                            className="w-full bg-zinc-100 text-zinc-900 py-3 rounded-2xl text-[10px] font-light tracking-widest uppercase hover:bg-zinc-200 transition-all active:scale-95"
+                            onClick={() => isAuthenticated ? handlePayment(product.product_id) : router.push("/login")}
+                            className="w-full text-white text-[9px] pb-1 border-b border-white/20 font-light tracking-widest uppercase hover:border-white transition-all text-left"
                         >
                             Instant Buy
                         </button>
 
-                        {/* Add to Cart Container */}
-                        <div className="group/btn relative h-12">
-                            <button className={`w-full h-full flex items-center justify-center gap-2 rounded-2xl text-[10px] font-light tracking-widest uppercase transition-all duration-300 ${isDone ? 'bg-emerald-500 text-white' : 'bg-zinc-900 text-white group-hover/btn:opacity-0 shadow-lg shadow-zinc-200'}`}>
-                                {isDone ? <Check size={16} /> : "Add to Bag"}
+                        <div className="group/btn relative h-6">
+                            <button className={`w-full h-full flex items-center justify-start gap-2 border-b text-[9px] font-light tracking-widest uppercase transition-all duration-300 ${isDone ? 'border-emerald-500 text-emerald-500' : 'border-white/20 text-white group-hover/btn:opacity-0'}`}>
+                                {isDone ? <Check size={12} /> : "+ Add to Bag"}
                             </button>
 
                             {!isDone && (
-                                <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 flex items-center justify-between bg-zinc-900 rounded-2xl px-2 transition-all duration-300 transform translate-y-2 group-hover/btn:translate-y-0 shadow-xl">
+                                <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 flex items-center justify-between transition-all duration-300 border-b border-white">
                                     <button
                                         onClick={(e) => { e.stopPropagation(); setQuantity(Math.max(1, quantity - 1)); }}
-                                        className="text-white p-2 hover:bg-white/10 rounded-xl transition-colors"
+                                        className="text-gray-400 hover:text-white transition-colors"
                                     >
-                                        <Minus size={14} />
+                                        <Minus size={12} />
                                     </button>
-                                    <span className="text-white font-black text-sm w-6 text-center tabular-nums">{quantity}</span>
+                                    <span className="text-white font-light text-xs w-6 text-center tabular-nums">{quantity}</span>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); setQuantity(quantity + 1); }} 
-                                        className="text-white p-2 hover:bg-white/10 rounded-xl transition-colors"
+                                        className="text-gray-400 hover:text-white transition-colors"
                                     >
-                                        <Plus size={14} />
+                                        <Plus size={12} />
                                     </button>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); onAddToCart(); }} 
                                         disabled={isAdding} 
-                                        className="bg-white text-zinc-900 p-2 rounded-xl hover:scale-105 transition-transform active:scale-95 ml-1"
+                                        className="text-white hover:scale-110 transition-transform ml-2"
                                     >
-                                        {isAdding ? <div className="w-4 h-4 border-2 border-zinc-900 border-t-transparent rounded-full animate-spin"></div> : <ArrowRight size={14} strokeWidth={3} />}
+                                        {isAdding ? <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin"></div> : <ArrowRight size={12} strokeWidth={2} />}
                                     </button>
                                 </div>
                             )}
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
