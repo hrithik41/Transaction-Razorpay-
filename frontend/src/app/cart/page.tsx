@@ -73,7 +73,7 @@ export default function CartPage() {
                         });
                         await clearCart();
                         setCart([]);
-                        router.push('/dashboard');
+                        router.push('/');
                     } catch (error) {
                         alert("Payment verification failed");
                     }
@@ -120,7 +120,7 @@ export default function CartPage() {
             <nav className="bg-white/80 backdrop-blur-xl border-b border-zinc-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
                     <button 
-                        onClick={() => router.push('/dashboard')}
+                        onClick={() => router.push('/')}
                         className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 font-light text-sm transition-all group"
                     >
                         <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
@@ -147,7 +147,7 @@ export default function CartPage() {
                         <h2 className="text-4xl font-light mb-4 uppercase tracking-tight text-zinc-900">Empty Bag</h2>
                         <p className="text-zinc-500 font-medium mb-10 max-w-xs mx-auto">Looks like you haven't added any premium items yet.</p>
                         <button 
-                            onClick={() => router.push('/dashboard')}
+                            onClick={() => router.push('/')}
                             className="bg-zinc-900 text-white px-10 py-4 rounded-2xl font-black text-xs tracking-widest uppercase hover:scale-105 transition-transform"
                         >
                             Start Shopping
