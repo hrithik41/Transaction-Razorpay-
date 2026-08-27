@@ -3,13 +3,15 @@
 
 import React, { useEffect, useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
-import { getProducts } from "@/lib/api";
+import { getProducts, createOrder, verifyPayment, markPaymentFailed } from "@/lib/api";
 import { ArrowRight } from "lucide-react";
-import Link from "next/link"; 
+import Link from "next/link";
+import { useRouter } from "next/navigation"; 
 
 export default function FeatureProducts() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -31,8 +33,46 @@ export default function FeatureProducts() {
     fetchFeatured();
   }, []);
 
-  const handlePayment = (productId: string) => {
-    alert("Instant checkout flow coming soon!");
+  const handlePayment = async (productId: string) => {
+    try {
+      const order = await createOrder(productId);
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Vilix",
+        description: "Instant Purchase",
+        order_id: order.id,
+        handler: async function (response: any) {
+          try {
+            await verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              amount: order.amount,
+            });
+            router.push("/orders");
+          } catch (err) {
+            console.error("Verification failed!", err);
+          }
+        },
+        theme: { color: "#000000" },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", async function (response: any) {
+        try {
+          await markPaymentFailed({ orderId: response.error.metadata.order_id });
+        } catch (e) {
+          console.error("Failed to mark payment as failed", e);
+        }
+      });
+      rzp.open();
+    } catch (error) {
+      console.error("Checkout failed:", error);
+      alert("Failed to initiate checkout. Please ensure you are logged in.");
+    }
   };
 
   return (

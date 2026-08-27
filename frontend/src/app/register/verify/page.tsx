@@ -84,7 +84,7 @@ function VerifyOtpContent() {
 
             setSuccess('Verification successful! Access granted.');
             setTimeout(() => {
-                router.push('/dashboard');
+                router.push('/');
             }, 1500);
         } catch (err: any) {
             setError(err.response?.data?.error || 'Invalid OTP code. Please try again.');
