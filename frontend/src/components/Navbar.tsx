@@ -15,7 +15,7 @@ export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const cartItems = useCartStore((state) => state.cart);
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = cartItems.length;
   const { isAuthenticated, initialize, logout } = useAuthStore();
   const router = useRouter();
 
@@ -45,19 +45,54 @@ export default function Navbar() {
       >
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 flex items-center justify-between">
 
-          {/* Left: Collapsable Menu & Search */}
-          <div className="flex items-center gap-8 flex-1">
+          {/* Left: Mobile Menu & Search (Mobile/Tablet) */}
+          <div className="flex xl:hidden items-center gap-6 flex-1">
             <button
               onClick={() => setIsMenuOpen(true)}
               className="text-white hover:text-gray-400 transition-colors flex items-center gap-3"
               aria-label="Open Menu"
             >
               <Menu size={28} strokeWidth={1.2} />
-              <span className="hidden md:block text-xs tracking-[0.2em] uppercase font-light">Menu</span>
             </button>
-            <button className="hidden md:flex text-white hover:text-gray-400 transition-colors items-center gap-3" aria-label="Search">
+            <button className="text-white hover:text-gray-400 transition-colors items-center gap-3" aria-label="Search">
               <Search size={22} strokeWidth={1.2} />
-              <span className="text-xs tracking-[0.2em] uppercase font-light">Search</span>
+            </button>
+          </div>
+
+          {/* Left: Desktop Navigation (XL screens) */}
+          <div className="hidden xl:flex items-center gap-8 flex-1 group/nav">
+            <div className="relative group/timepieces h-full py-4">
+              <Link href="/products" className="text-white text-[10px] tracking-[0.2em] uppercase hover:text-gray-400 transition-colors flex items-center gap-2">
+                Timepieces
+              </Link>
+              
+              {/* Mega Menu Dropdown */}
+              <div className="absolute top-[100%] left-0 w-[600px] bg-[#050505] border border-white/10 p-8 opacity-0 invisible group-hover/timepieces:opacity-100 group-hover/timepieces:visible transition-all duration-300 translate-y-4 group-hover/timepieces:translate-y-0 shadow-2xl flex gap-8">
+                 <div className="flex-1 flex flex-col gap-4">
+                    <span className="text-gray-500 text-[9px] tracking-[0.3em] uppercase mb-4 border-b border-white/10 pb-4">Collections</span>
+                    <Link href="/products" className="text-white hover:text-gray-400 text-sm font-light transition-colors">Casino Rose Gold</Link>
+                    <Link href="/products" className="text-white hover:text-gray-400 text-sm font-light transition-colors">Chronograph Pro</Link>
+                    <Link href="/products" className="text-white hover:text-gray-400 text-sm font-light transition-colors">Heritage Classic</Link>
+                    <Link href="/products" className="text-white hover:text-gray-400 text-sm font-light transition-colors mt-4 text-[10px] tracking-[0.2em] uppercase underline underline-offset-4">View All</Link>
+                 </div>
+                 <div className="w-[300px] h-[200px] bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center p-6">
+                    <img src="/hero-watch.png" alt="Featured" className="w-full h-full object-contain hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute bottom-4 left-4">
+                      <span className="text-white text-xs font-medium">New Release</span>
+                    </div>
+                 </div>
+              </div>
+            </div>
+
+            <Link href="/brand" className="text-white text-[10px] tracking-[0.2em] uppercase hover:text-gray-400 transition-colors">
+              The Brand
+            </Link>
+            <Link href="/boutiques" className="text-white text-[10px] tracking-[0.2em] uppercase hover:text-gray-400 transition-colors">
+              Boutiques
+            </Link>
+            <button className="text-white hover:text-gray-400 transition-colors flex items-center gap-2">
+              <Search size={18} strokeWidth={1.5} />
+              <span className="text-[10px] tracking-[0.2em] uppercase">Search</span>
             </button>
           </div>
 
