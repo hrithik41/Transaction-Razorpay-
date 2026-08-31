@@ -76,17 +76,17 @@ export default function FeatureProducts() {
   };
 
   return (
-    <section className="w-full bg-[#020202] py-20 md:py-32 px-6 md:px-12 relative z-10 border-t border-white/5">
+    <section className="w-full bg-[#020202] py-16 md:py-32 px-6 md:px-12 relative z-10 border-t border-white/5">
       {/* Subtle vertical accent line for an architectural feel */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-20 bg-gradient-to-b from-white/20 to-transparent" />
 
       <div className="max-w-[1600px] mx-auto">
         
         {/* Premium Split Header Layout with CTA */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-8 md:gap-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-24 gap-6 md:gap-12">
           <div className="max-w-2xl">
             <span className="text-gray-500 font-sans text-[10px] md:text-xs tracking-[0.3em] uppercase mb-4 block">
-              01 // The Collection
+              The Collection
             </span>
             <h2 className="text-4xl md:text-6xl text-white leading-[1.1]" style={{ fontFamily: 'var(--font-playfair)' }}>
               Featured Timepieces
@@ -112,14 +112,29 @@ export default function FeatureProducts() {
             <div className="w-8 h-8 border border-white/20 border-t-white rounded-full animate-spin" />
           </div>
         ) : products.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-x-12 gap-y-12 md:gap-y-16">
-            {products.map((product) => (
-              <ProductCard 
-                key={product.product_id} 
-                product={product} 
-                handlePayment={handlePayment} 
-              />
-            ))}
+          <div className="flex flex-col gap-16 md:gap-32">
+            
+            {/* Highlight Product (Hero) */}
+            <ProductCard 
+              key={products[0].product_id}
+              product={products[0]}
+              handlePayment={handlePayment}
+              variant="hero"
+            />
+
+            {/* Remaining Products */}
+            {products.length > 1 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-x-12 gap-y-16">
+                  {products.slice(1).map((product) => (
+                    <ProductCard 
+                      key={product.product_id} 
+                      product={product} 
+                      handlePayment={handlePayment} 
+                    />
+                  ))}
+                </div>
+            )}
+            
           </div>
         ) : (
           <div className="text-center text-gray-500 py-32 border border-white/5 rounded-2xl">
